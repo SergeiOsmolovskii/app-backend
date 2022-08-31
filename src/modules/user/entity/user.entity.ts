@@ -16,6 +16,10 @@ export class UserEntity {
 
   @ApiProperty()
   @Column()
+  email: string;
+
+  @ApiProperty()
+  @Column()
   password: string;
 
   @ApiProperty()
@@ -31,7 +35,7 @@ export class UserEntity {
   updatedAt: number;
 
   toResponse() {
-    const { id, login, createdAt, updatedAt, version } = this;
-    return { id, login, createdAt: +new Date(createdAt), updatedAt: +updatedAt, version };
+    const { id, login, createdAt, updatedAt, version, email } = this;
+    return { id, login, createdAt: +new Date(createdAt), updatedAt: +updatedAt, version, email };
   }
 }
