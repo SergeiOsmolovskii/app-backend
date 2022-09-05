@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
 import { ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
-import { CreateUserDto } from '../../dto/create-user.dto';
-import { UpdatePasswordDto } from '../../dto/update-password.dto';
-import { UserEntity } from '../../entity/user.entity';
-import { UserService } from '../../service/user.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdatePasswordDto } from '../dto/update-password.dto';
+import { UserEntity } from '../entity/user.entity';
+import { UserService } from '../service/user.service';
 
 
 @ApiTags('User')
@@ -17,7 +17,6 @@ export class UserController {
     description: 'Get all users',
     type: [UserEntity],
   })
-
   @HttpCode(HttpStatus.OK)
   public async getAllUsers() {
     return this.userService.getAllUsers();
@@ -26,10 +25,9 @@ export class UserController {
   @Post()
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Post new user',
-    type: CreateUserDto,
+    description: 'Create new user',
+    type: OmitType(UserEntity, ['password']),
   })
-  
   @HttpCode(HttpStatus.CREATED)
   public async createUser(@Body() newUser: CreateUserDto) {
     return this.userService.createUser(newUser);
@@ -59,7 +57,7 @@ export class UserController {
 
   @Delete('/:id')
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.NO_CONTENT,
     description: 'Delete user',
   })
   @HttpCode(HttpStatus.NO_CONTENT)

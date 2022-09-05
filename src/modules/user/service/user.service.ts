@@ -12,7 +12,7 @@ export class UserService {
 
   constructor(
     @InjectRepository(UserEntity)
-    private readonly usersRepository: Repository<UserEntity>
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
   public async getAllUsers() {
@@ -21,10 +21,10 @@ export class UserService {
 
   public async createUser(userDto: CreateUserDto) {
     const isCurrentLoginInDB = await this.usersRepository.findOneBy({login: userDto.login});
-    const isCurrentEmailInDB = await this.usersRepository.findOneBy({login: userDto.email});
+    const isCurrentEmailInDB = await this.usersRepository.findOneBy({email: userDto.email});
     
     if (isCurrentLoginInDB) throw new ForbiddenException(`User with the same login already exists`);
-    if (isCurrentEmailInDB) throw new ForbiddenException(`User with the same name already exists`);
+    if (isCurrentEmailInDB) throw new ForbiddenException(`User with the same email already exists`);
 
     const passwordAsHash = await generatePasswordHash(userDto.password);
     const newUserData = {...userDto, password: passwordAsHash};
