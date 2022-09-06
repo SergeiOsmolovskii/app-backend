@@ -1,5 +1,5 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
 import { UserEntity } from '../../user/entity/user.entity';
 import { CreateUserDto } from '../../user/dto/create-user.dto';
 import { UserService } from '../../user/service/user.service';
@@ -10,35 +10,38 @@ import { TokenDto } from '../dto/token.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
+  
   constructor(private authService: AuthService, private usersService: UserService, private tokenService: TokenService ) {}
 
-  @Post('/signup')
+  @ApiOperation({ summary: 'Create new user' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Register new user',
-    type: [UserEntity],
+    type: OmitType(UserEntity, ['password']),
   })
+  @Post('/signup')
   public signup(@Body() body: CreateUserDto): Promise<CreateUserDto> {
-
     return this.usersService.createUser(body);
   }
 
-  @Post('/signin') 
+  @ApiOperation({ summary: 'Create user access and refresh tokens' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Login user',
+    description: 'Create user access and refresh tokens',
     type: TokenDto,
   })
+  @Post('/signin') 
   public signin(@Body() body: { login: string, password: string }): Promise<{accessToken: string, refreshToken: string}> {
     return this.authService.signin(body);
   }
 
-  @Post('/refresh')
+  @ApiOperation({ summary: 'Create new user access and refresh tokens' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get refresh token',
+    description: 'Create new user access and refresh tokens',
     type: TokenDto,
   })
+  @Post('/refresh')
   public refresh(@Body() body: { refreshToken: string }): Promise<{accessToken: string, refreshToken: string}> {
     return this.authService.refresh(body);
   }
