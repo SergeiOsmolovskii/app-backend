@@ -6,6 +6,7 @@ import { UserService } from '../../user/service/user.service';
 import { AuthService } from '../service/auth.service';
 import { TokenService } from '../service/token.service';
 import { TokenDto } from '../dto/token.dto';
+import { SigninUserDto } from '../dto/signin-user.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -15,7 +16,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Create new user' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: 'Register new user',
     type: OmitType(UserEntity, ['password']),
   })
@@ -26,23 +27,23 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Create user access and refresh tokens' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: 'Create user access and refresh tokens',
     type: TokenDto,
   })
   @Post('/signin') 
-  public signin(@Body() body: { login: string, password: string }): Promise<{accessToken: string, refreshToken: string}> {
+  public signin(@Body() body: SigninUserDto): Promise<TokenDto> {
     return this.authService.signin(body);
   }
 
   @ApiOperation({ summary: 'Create new user access and refresh tokens' })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: 'Create new user access and refresh tokens',
     type: TokenDto,
   })
   @Post('/refresh')
-  public refresh(@Body() body: { refreshToken: string }): Promise<{accessToken: string, refreshToken: string}> {
+  public refresh(@Body() body: { refreshToken: string }): Promise<TokenDto> {
     return this.authService.refresh(body);
   }
 }

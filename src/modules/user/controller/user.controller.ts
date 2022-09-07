@@ -1,16 +1,18 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiProperty, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
+import { AuthGuard } from '../../auth/auth.guard';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdatePasswordDto } from '../dto/update-password.dto';
 import { UserEntity } from '../entity/user.entity';
 import { UserService } from '../service/user.service';
 
-
 @ApiTags('User')
+@ApiBearerAuth('token')
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private userService: UserService ) {}
-  
+
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
     status: HttpStatus.OK,
